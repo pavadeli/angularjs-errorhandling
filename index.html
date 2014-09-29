@@ -13,9 +13,29 @@
     body {
       padding-bottom: 25px;
     }
+
+    .error-msgs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background-color: white;
+    }
+
+    .alert {
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body ng-app="demo">
+  <div class="error-msgs">
+    <!-- Show error messages (typically a reusable directive) -->
+    <div class="alert alert-danger alert-dismissable" ng-repeat="msg in errorHandler.errors track by $index">
+      <button type="button" class="close" ng-click="errorHandler.errors.splice($index, 1)">&times;</button>
+      {{msg}}
+    </div>
+  </div>
+
   <div class="container">
 
     <div class="page-header">
@@ -23,12 +43,8 @@
       <p class="lead">Companion material with <a href="http://technology.amis.nl">this blog post</a>.</p>
     </div>
 
-    <!-- Show error messages (typically a reusable directive) -->
-    <caption>Error messages appear here:</caption>
-    <div class="alert alert-danger alert-dismissable" ng-repeat="msg in errorHandler.errors track by $index">
-      <button type="button" class="close" ng-click="errorHandler.errors.splice($index, 1)">&times;</button>
-      {{msg}}
-    </div>
+    <h2>Introduction</h2>
+    <p>Error messages will appear in the top-left corner of the browser screen. Not very user-friendly, I know, but now you don't have to scroll to the top to see the error messages. See the blog post for more information.</p>
 
     <h2>Manual handling</h2>
     <table class="table table-hover" ng-controller="manualController">
@@ -133,6 +149,13 @@
 
     <h2>Realistic scenario</h2>
     <div ng-controller="exampleController">
+      <pre>$scope.data = '';
+$scope.loadData = function loadData() {
+  $scope.data = '';
+  exampleService.loadData().then(function (data) {
+    $scope.data = data;
+  });
+};</pre>
       <p>
         <button type="button" class="btn btn-primary" ng-click="loadData(true)">Load some data</button>
         <button type="button" class="btn btn-danger" ng-click="loadData(false)">Load some data (will fail)</button>

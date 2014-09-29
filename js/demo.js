@@ -1,6 +1,7 @@
 angular.module('demo', ['demo.errorHandler'])
 
 	// MANUAL HANDLING...
+	// The following service is not wrapped or decorated in any way.
 	.factory('undecoratedService', function ($q, $timeout) {
 		return {
 			throwsAnError: function throwsAnError() {
@@ -11,7 +12,7 @@ angular.module('demo', ['demo.errorHandler'])
 				var defer = $q.defer();
 				$timeout(function () {
 					defer.reject('Something went wrong (asynchronously).');
-				}, 1000);
+				}, 500);
 				return defer.promise;
 			}
 		};
@@ -50,17 +51,21 @@ angular.module('demo', ['demo.errorHandler'])
 	})
 
 	// AUTOMATIC HANDLING...
+	// The decoratedService is wrapped by the errorHandler service in the .config() block below.
 	.factory('decoratedService', function ($q, $timeout) {
+
+		// The throwsAnError function throws an error.
 		function throwsAnError() {
 			throw new Error('You won\'t believe what just happened!');
 		}
 		throwsAnError.description = 'perform some synchronous operation';
 
+		// The promiseRejectsAfterAWhile function returns a promise that... rejects after a while.
 		function promiseRejectsAfterAWhile() {
 			var defer = $q.defer();
 			$timeout(function () {
 				defer.reject('Something happened, but I\'m not sure how to fix it.');
-			}, 1000);
+			}, 500);
 			return defer.promise;
 		}
 		promiseRejectsAfterAWhile.description = 'perform some asynchronous operation';
