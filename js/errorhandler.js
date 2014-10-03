@@ -15,22 +15,22 @@ angular.module('demo.errorHandler', [])
       }, func);
     }
 
-    return {
-      // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
-      // function in a call to $provide.decorator().
-      decorator: ['$delegate', '$injector', function($delegate, $injector) {
-      	// Loop over all functions in $delegate and wrap these functions using the [decorate] functions above.
-        for (var prop in $delegate) {
-          if (angular.isFunction($delegate[prop])) {
-            $delegate[prop] = decorate($injector, $delegate, $delegate[prop]);
-          }
+    // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
+    // function in a call to $provide.decorator().
+    var decorator = ['$delegate', '$injector', function($delegate, $injector) {
+      // Loop over all functions in $delegate and wrap these functions using the [decorate] functions above.
+      for (var prop in $delegate) {
+        if (angular.isFunction($delegate[prop])) {
+          $delegate[prop] = decorate($injector, $delegate, $delegate[prop]);
         }
-        return $delegate;
-      }],
+      }
+      return $delegate;
+    }];
 
+    // The actual service:
+    return {
       // Decorate the mentioned [services] with automatic error handling. See demo.js for an example.
       decorate: function ($provide, services) {
-        var decorator = this.decorator;
         angular.forEach(services, function (service) {
           $provide.decorator(service, decorator);
         });

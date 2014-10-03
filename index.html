@@ -6,12 +6,16 @@
   <link rel="stylesheet" href="components/bootstrap/bootstrap.css">
 
   <style>
-    .table>tbody>tr>td.middle {
-      vertical-align: middle;
-    }
-
     body {
       padding-bottom: 25px;
+    }
+
+    .container {
+      max-width: 750px;
+    }
+
+    .table>tbody>tr>td.middle {
+      vertical-align: middle;
     }
 
     .error-msgs {
@@ -24,6 +28,10 @@
 
     .alert {
       margin-bottom: 0;
+    }
+
+    h2 {
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -54,7 +62,7 @@
             <h4>Synchronous error (unhandled)</h4>
             <p>A function throws a synchronous error.</p>
             <pre>undecoratedService.throwsAnError();</pre>
-            <small>Look in the log for the error details. User doesn't know anything went wrong.</small>
+            <small>Look in the console log for the error details. User doesn't know anything went wrong.</small>
           </td>
           <td class="middle">
             <button type="button" class="btn btn-primary btn-block" ng-click="synchronousError()">Try it</button>
@@ -77,7 +85,7 @@
         <tr class="active">
           <td>
             <h4>Synchronous error (manual function wrapping)</h4>
-            <p>Call the service using the errorHandler.</p>
+            <p>Call the service using the errorHandler (kinda stupid).</p>
             <pre>errorHandler.call(undecoratedService.throwsAnError, undecoratedService);</pre>
           </td>
           <td class="middle">
@@ -111,7 +119,7 @@
         <tr class="active">
           <td>
             <h4>Asynchronous error (manual function wrapping)</h4>
-            <p>Call the service using the errorHandler.</p>
+            <p>Call the service using the errorHandler (stupid).</p>
             <pre>errorHandler.call(undecoratedService.promiseRejects, undecoratedService);</pre>
           </td>
           <td class="middle">
@@ -127,7 +135,7 @@
         <tr class="success">
           <td>
             <h4>Synchronous error (automatic function wrapping)</h4>
-            <p>Call the service as you normally would.</p>
+            <p>Call the service as you normally would but get error messages for free.</p>
             <pre>decoratedService.throwsAnError();</pre>
           </td>
           <td class="middle">
@@ -137,7 +145,7 @@
         <tr class="success">
           <td>
             <h4>Asynchronous error (automatic function wrapping)</h4>
-            <p>Call the service as you normally would.</p>
+            <p>Call the service as you normally would but get error messages for free.</p>
             <pre>decoratedService.promiseRejectsAfterAWhile();</pre>
           </td>
           <td class="middle">
@@ -149,16 +157,29 @@
 
     <h2>Realistic scenario</h2>
     <div ng-controller="exampleController">
+      <p>This is a more realistic scenario. Suppose you want to load some data "ajaxy" on the press of a button, you want
+      the code to look like this:</p>
+      <caption>Service function</caption>
+      <pre>function loadData() {
+  return $http.get('somefile.html')
+    .then(function (result) {
+      return result.data;
+    });
+}
+</pre>
+      <caption>Controller</caption>
       <pre>$scope.data = '';
-$scope.loadData = function loadData() {
-  $scope.data = '';
+$scope.buttonPressed = function () {
   exampleService.loadData().then(function (data) {
     $scope.data = data;
   });
 };</pre>
+      <p>It is obvious that any error will leave the user in the dark about what happened, without any feedback. We <strong>do</strong> want to inform the user about the error with a meaningful error message, but we <strong>don't</strong> want to write tedious error handling code over and over again. Now with the following simple command, we get just that:</p>
+      <pre>errorHandlerProvider.decorate($provide, ['theServiceNameHere', 'anotherServiceHere']);</pre>
+      <h3>Try it</h3>
       <p>
-        <button type="button" class="btn btn-primary" ng-click="loadData(true)">Load some data</button>
-        <button type="button" class="btn btn-danger" ng-click="loadData(false)">Load some data (will fail)</button>
+        <button type="button" class="btn btn-primary" ng-click="loadData('data')">Load some data (will succeed)</button>
+        <button type="button" class="btn btn-danger" ng-click="loadData('doesntExist')">Load some data (will fail)</button>
       </p>
       <pre>Data: {{data}}</pre>
     </div>
