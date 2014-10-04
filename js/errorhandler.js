@@ -2,6 +2,7 @@
 
 angular.module('demo.errorHandler', [])
   .constant('httpErrors', {
+      0: 'The server is unreachable.',
   	404: 'The requested data or service could not be found.',
   	500: 'Unknown errors occurred at the server.'
   })
@@ -45,14 +46,18 @@ angular.module('demo.errorHandler', [])
 
           // Report the error [err] in relation to the function [func].
           funcError: function (func, err) {
-          	if (err && err.status) {
+
+            // This is a very limited error handler... you would probably want to check for user-friendly error messages
+            // that were returned by the server, etc.
+
+          	if (err && !angular.isUndefined(err.status)) {
 	          	// A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
             	err = httpErrors[err.status];
             } else if (err && err.message) {
             	// Exceptions are unwrapped.
             	err = err.message;
             }
-            if (angular.isUndefined(err)) {
+            if (!angular.isString(err)) {
               err = 'An unknown error occurred.';
             }
             if (func && func.description) {
