@@ -10,18 +10,22 @@ angular.module('demo', ['demo.errorHandler'])
 
 	.factory('undecoratedService', function ($q, $timeout) {
 
-		return {
-			throwsAnError: function throwsAnError() {
-				throw new Error('This is an error from throwsAnError.');
-			},
+		function throwsAnError() {
+			throw new Error('This is an error from throwsAnError.');
 
-			promiseRejects: function promiseRejects() {
-				var defer = $q.defer();
-				$timeout(function () {
-					defer.reject('Something went wrong (asynchronously).');
-				}, 500);
-				return defer.promise;
-			}
+		};
+
+		function promiseRejects() {
+			var defer = $q.defer();
+			$timeout(function () {
+				defer.reject('Something went wrong (asynchronously).');
+			}, 500);
+			return defer.promise;
+		};
+
+		return {
+			throwsAnError: throwsAnError,
+			promiseRejects: promiseRejects
 		};
 	})
 
@@ -93,8 +97,8 @@ angular.module('demo', ['demo.errorHandler'])
 		}
 
 		// Provide a small description for each method for even better error messages.
-		throwsAnError.description = 'perform some synchronous operation';
-		promiseRejectsAfterAWhile.description = 'perform some asynchronous operation';
+		throwsAnError.description = 'perform the blablabla synchronous operation';
+		promiseRejectsAfterAWhile.description = 'perform some blablabla asynchronous operation';
 
 		return {
 			throwsAnError: throwsAnError,
@@ -131,6 +135,7 @@ angular.module('demo', ['demo.errorHandler'])
 				});
 		}
 
+		// Provide the description of each method, which also functions as documentation. :-)
 		loadData.description = 'load the example data in the \'realistic scenario\'';
 
 		return {

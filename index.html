@@ -23,7 +23,6 @@
       top: 0;
       left: 0;
       z-index: 1;
-      background-color: white;
     }
 
     .alert {
@@ -42,13 +41,14 @@
       <button type="button" class="close" ng-click="errorHandler.errors.splice($index, 1)">&times;</button>
       {{msg}}
     </div>
+    <button type="button" class="btn btn-sm btn-default" ng-click="errorHandler.errors.length = 0;" ng-show="errorHandler.errors.length">Clear all messages</button>
   </div>
 
   <div class="container">
 
     <div class="page-header">
       <h1>Demo of automatic error handling</h1>
-      <p class="lead">Companion material with <a href="http://technology.amis.nl">this blog post</a>.</p>
+      <p class="lead">Companion material with <a href="http://technology.amis.nl/2014/10/06/automatic-error-handling-in-angularjs/">this blog post</a>.</p>
     </div>
 
     <h2>Introduction</h2>

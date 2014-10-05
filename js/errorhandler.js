@@ -44,11 +44,13 @@ angular.module('demo.errorHandler', [])
         	// The list of errors.
           errors: [],
 
+
           // Report the error [err] in relation to the function [func].
           funcError: function (func, err) {
 
             // This is a very limited error handler... you would probably want to check for user-friendly error messages
-            // that were returned by the server, etc.
+            // that were returned by the server, etc, etc, etc. Our original code contains a lot of checks and handling
+            // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
 
           	if (err && !angular.isUndefined(err.status)) {
 	          	// A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
@@ -60,12 +62,16 @@ angular.module('demo.errorHandler', [])
             if (!angular.isString(err)) {
               err = 'An unknown error occurred.';
             }
+
+            // Use the context provided by the service.
             if (func && func.description) {
               err = 'Unable to ' + func.description + '. ' + err;
             }
+
             $log.info('Caught error: ' + err);
             handler.errors.push(err);
           },
+
 
           // Call the provided function [func] with the provided [args] and error handling enabled.
           call: function (func, self, args) {
@@ -90,7 +96,8 @@ angular.module('demo.errorHandler', [])
             return result;
           },
 
-          // Automatically record rejections of the provided [promise] into error messages.
+
+          // Automatically record rejections of the provided [promise].
           async: function (func, promise) {
             promise['catch'](function (err) {
               handler.funcError(func, err);
